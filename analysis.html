@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="replay/demo.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forza 7 Track Analysis</title>
+    <link rel="stylesheet" href="playback.css">
+    <link rel="stylesheet" href="analysis.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        /* Corner scorecard, delta chart and diff colours. Move these into analysis.css if you prefer. */
+        #deltaChart { display: block; width: 100%; height: 150px; margin-top: 10px; cursor: crosshair; }
+        #deltaChart[hidden] { display: none; }
+        .table-wrap { overflow-x: auto; }
+        #cornerTable { width: 100%; border-collapse: collapse; font-size: 13px; }
+        #cornerTable th, #cornerTable td { padding: 7px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        #cornerTable th:first-child, #cornerTable td:first-child { text-align: left; }
+        #cornerTable th { font-weight: 600; opacity: 0.75; font-size: 12px; }
+        #cornerTable tbody tr { cursor: pointer; }
+        #cornerTable tbody tr:hover, #cornerTable tbody tr.active { background: rgba(255, 255, 255, 0.07); }
+        #cornerTable .diff { margin-left: 6px; font-size: 11px; opacity: 0.6; }
+        #cornerTable .loss { color: #fb4f60; font-weight: 600; }
+        #cornerTable .gain { color: #4ade80; font-weight: 600; }
+        .reference-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 10px; }
+        #referencePanel[hidden], #referencePlots[hidden] { display: none; }
+        #referencePlots { margin-top: 8px; }
+        #referencePlots summary { cursor: pointer; }
+        #referencePlots img { display: block; max-width: 100%; margin-top: 8px; border-radius: 6px; background: #fff; }
+        .improve-list { margin: 8px 0 14px 20px; padding: 0; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+<div class="container">
+    <header class="topbar">
+        <div><div class="eyebrow">FORZA MOTORSPORT 7</div><h1>Track Analysis</h1></div>
+    </header>
+    <section class="session-bar">
+        <div class="session-picker"><label class="label" for="sessionSelect">Saved session</label><select id="sessionSelect" disabled><option>Loading sessions...</option></select></div>
+        <div class="session-info"><span class="label">Track</span><strong id="trackName">-</strong></div>
+        <div class="session-info"><span class="label">Car</span><strong id="carName">-</strong></div>
+        <div id="status" role="status" aria-live="polite">Loading saved sessions...</div>
+    </section>
+    <section class="panel analysis-controls">
+        <label>Reference lap <select id="lapSelect" disabled></select></label>
+        <label>Compare with <select id="compareSelect" disabled></select></label>
+        <label>Map overlay <select id="overlaySelect"><option value="both">Throttle + brake</option><option value="throttle">Throttle</option><option value="brake">Brake</option><option value="acceleration">Longitudinal G</option><option value="speed">Speed</option><option value="delta">Time delta vs comparison</option><option value="lineError">Racing line error</option><option value="aiBrake">Brake vs AI</option><option value="offTrack">Off track</option></select></label>
+        <label class="check-control"><input id="onsets" type="checkbox" checked> Pedal onset markers</label>
+        <label class="check-control"><input id="distances" type="checkbox" checked> Distance markers</label>
+        <label class="check-control"><input id="approach" type="checkbox" checked> Approach markers (50–200 m)</label>
+        <label class="check-control"><input id="offMarkers" type="checkbox" checked> Off-track markers</label>
+        <button id="zoomIn" type="button" class="secondary">Zoom +</button>
+        <button id="zoomOut" type="button" class="secondary">Zoom −</button>
+        <button id="resetView" type="button" class="secondary">Fit track</button>
+    </section>
+    <div class="analysis-layout">
+        <section class="panel map-analysis">
+            <div class="panel-head"><div><div class="eyebrow">INTERACTIVE DRIVING LINE</div><h2>Track map</h2></div><span class="hint" id="mapInfo">Select a lap</span></div>
+            <canvas id="analysisMap" tabindex="0" aria-label="Interactive track map. Use zoom buttons and drag to pan; select a recorded point to inspect it."></canvas>
+            <div class="map-legend"><span id="overlayLegend"><span class="green-dot">●</span> throttle <span class="red-dot">●</span> brake · brighter = more input</span><span class="hint">B / A = brake / throttle onset above 5%</span></div>
+            <div id="referencePanel" hidden>
+                <div class="reference-row">
+                    <label class="check-control"><input id="edges" type="checkbox" checked> Track edges</label>
+                    <label class="check-control"><input id="refRaceline" type="checkbox"> Reference raceline</label>
+                    <button id="refitReference" type="button" class="secondary">Re-fit alignment</button>
+                    <span class="hint" id="referenceInfo"></span>
+                </div>
+                <details id="referencePlots" hidden>
+                    <summary>Reference raceline and curvature plots</summary>
+                    <img id="refRacelinePng" alt="Reference raceline plot" loading="lazy">
+                    <img id="refCurvaturePng" alt="Reference curvature plot" loading="lazy">
+                    <p class="hint">Track data: TUM Institute of Automotive Technology, racetrack-database (LGPL-3.0), built from OpenStreetMap data. See maps/reference/CREDITS.txt. The raceline is a minimum-curvature line for the real circuit, not a Forza-specific optimum.</p>
+                </details>
+            </div>
+            <canvas id="deltaChart" hidden aria-label="Time difference against the comparison lap along the reference lap. Click to select a point."></canvas>
+            <p class="hint" id="mapHelp">Scroll or pinch to zoom; drag to pan. Hover or click the line for readings. Distances are estimated from the start/finish line; gaps and rewinds stop a lap trace.</p>
+        </section>
+        <aside class="analysis-side">
+            <section class="panel">
+                <div class="eyebrow">SELECTED POINT</div><h2>Telemetry</h2>
+                <div id="pointDetails" class="point-details">Hover or select a point on the map.</div>
+                <a id="pointReplay" class="navlink disabled-link" href="playback.html" aria-disabled="true">Open point in playback</a>
+            </section>
+            <section class="panel">
+                <div class="eyebrow">CORNER ANALYSIS</div><h2>Turns</h2>
+                <p class="hint">Estimated from the driven line, not official turn numbers. Click a turn to inspect; edit mode lets you add markers by clicking the line. Markers are saved in this browser for this track and shared by every session and lap.</p>
+                <div class="turn-actions">
+                    <button id="editTurns" class="secondary" type="button">Edit turns</button>
+                    <button id="clearTurns" class="secondary" type="button" disabled>Clear turns</button>
+                    <button id="resetTurns" class="secondary" type="button">Restore estimates</button>
+                </div>
+                <div id="turnList" class="turn-list"></div>
+                <div id="turnDetails" class="hint">Select a turn for a local lap comparison.</div>
+            </section>
+        </aside>
+    </div>
+    <section class="panel coach-panel" id="coachPanel">
+        <div class="eyebrow">DRIVING COACH</div><h2>Where to find time</h2>
+        <p class="hint" id="coachHint">Select a lap to get coaching.</p>
+        <div class="coach-grid">
+            <div>
+                <div class="label coach-title">Top 3 places to gain time · click to show on the map</div>
+                <div id="coachTop" class="coach-top"></div>
+            </div>
+            <div>
+                <div class="label coach-title">Brake points</div>
+                <ul id="coachBrakes" class="coach-brakes"></ul>
+                <p class="hint" id="coachBrakeHint"></p>
+            </div>
+        </div>
+    </section>
+    <section class="panel scorecard-panel">
+        <div class="eyebrow">CORNER ANALYSIS</div><h2>Corner scorecard</h2>
+        <p class="hint" id="scoreHint">Select a lap to see the scorecard.</p>
+        <ol id="improveList" class="improve-list"></ol>
+        <div class="table-wrap">
+            <table id="cornerTable">
+                <thead><tr>
+                    <th>Turn</th><th title="Metres before corner entry where braking began">Brake point (m before entry)</th><th>Peak brake</th>
+                    <th>Slowest speed</th><th>Exit speed</th><th title="Metres after the apex where throttle passed 50%">Throttle ≥50% (m after apex)</th>
+                    <th title="Average distance from the game's ideal line">Line error</th><th title="Off-track events and time with tires off the asphalt, from halfway after the previous corner to halfway before the next">Off track</th><th title="Time lost (+) or gained (−) against the comparison lap, from halfway after the previous corner to halfway before the next">Time vs comparison</th>
+                </tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+    <section class="panel offtrack-panel" id="offTrackPanel">
+        <div class="panel-head">
+            <div><div class="eyebrow">OFF TRACK</div><h2>Off-track events</h2></div>
+            <div class="off-controls">
+                <label for="offThreshold">Surface rumble threshold</label>
+                <input id="offThreshold" type="number" min="0" step="0.01" inputmode="decimal">
+                <button id="offReset" type="button" class="secondary">Default</button>
+            </div>
+        </div>
+        <p class="hint" id="offHint">Select a lap to see off-track events.</p>
+        <div id="offContent" hidden>
+            <div class="off-summary" id="offSummary"></div>
+            <div class="off-grid">
+                <div>
+                    <div class="label off-title">This lap · click an event to show it on the map</div>
+                    <div class="table-wrap"><table id="offEventTable" class="off-table">
+                        <thead><tr><th>#</th><th>Distance</th><th>Where</th><th>Tires off</th><th>Time</th><th title="Highest surface rumble on an off-track tire">Peak rumble</th></tr></thead>
+                        <tbody></tbody>
+                    </table></div>
+                </div>
+                <div>
+                    <div class="label off-title">Every lap in this session · click to open</div>
+                    <div class="table-wrap"><table id="offLapTable" class="off-table">
+                        <thead><tr><th>Lap</th><th>Events</th><th>Time off</th><th title="Events where all four tires were off at once">All four</th><th>FL</th><th>FR</th><th>RL</th><th>RR</th></tr></thead>
+                        <tbody></tbody>
+                    </table></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel analysis-notes">
+        <h2>Reading this view</h2>
+        <p class="hint">Throttle and brake overlays represent pedal inputs, not acceleration force. Values between recorded samples are interpolated. Onsets mark transitions from at most 5% to above 5%; they are sampled, not exact braking distances. Sector lines use the selected lap's estimated traveled distance, so their locations may differ between laps. Corner times compare the same map locations on both laps (matched by position, so they don't depend on each lap's measured distance). A corner's time covers the stretch from halfway after the previous corner to halfway before the next, so the corner times add up to the lap-time difference when every stretch could be matched. Approach markers count back from where the corner starts to turn the car. Different driving lines and missing samples limit accuracy; a faster segment does not establish cause. Off-track detection uses the game's per-tire surface rumble and rumble-strip flags: a tire is off when its rumble is above the threshold while it is not on a kerb. Tire times add up each tire separately, so they can exceed the event time.</p>
+    </section>
+</div>
+<script src="sectors.js"></script>
+<script src="reference-track.js"></script>
+<script src="analysis-core.js"></script>
+<script src="analysis.js"></script>
+</body>
+</html>

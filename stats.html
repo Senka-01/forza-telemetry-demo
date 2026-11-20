@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="replay/demo.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forza 7 Race Stats</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="chart-theme.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #101015; color: #ececef; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        select { background: #18181e; color: #ececef; border: 1px solid #414048; border-radius: 7px; padding: 8px 10px; max-width: 100%; }
+    </style>
+    <link rel="stylesheet" href="legacy-theme.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="stats.css">
+</head>
+<body class="stats-page">
+<script src="sidebar.js"></script>
+<div class="container st">
+    <header class="st-top">
+        <div><div class="eyebrow">Forza Motorsport 7</div><h1>Race Statistics</h1></div>
+    </header>
+
+    <section class="st-session">
+        <div class="st-picker"><label class="label" for="sessionSelect">Saved session</label><select id="sessionSelect"></select></div>
+        <div><span class="label">Track</span><strong id="trackName">-</strong></div>
+        <div class="st-carname"><span class="label">Car</span><strong id="carName">-</strong></div>
+        <div><span class="label">Date</span><strong id="sessionDate">-</strong></div>
+    </section>
+
+    <div id="empty" class="empty panel" style="display:none">No saved sessions yet. Finish a race with the server running and it will show up here.</div>
+
+    <div id="content" style="display:none">
+        <div id="cards"></div>
+
+        <div class="st-main">
+            <section class="panel st-map">
+                <div class="panel-head">
+                    <div><div class="eyebrow">Driven line</div><h2>Track map</h2></div>
+                    <span class="hint" id="mapInfo"></span>
+                </div>
+                <canvas class="map" id="mapCanvas" width="1200" height="600"></canvas>
+                <div class="st-legend legend">
+                    <span class="st-scale"><span id="mapSlow">0 mph</span><span class="st-ramp"></span><span id="mapFast">0 mph</span></span>
+                    <span class="st-key"><span class="dot"></span>Start</span>
+                    <span class="st-key"><span class="ring"></span>Rewind</span>
+                    <span class="hint">Uses the rotation you set on the live page for this track.</span>
+                </div>
+            </section>
+
+            <section class="panel st-laps">
+                <div class="panel-head"><div><div class="eyebrow">Timing</div><h2>Laps</h2></div></div>
+                <div class="table-scroll">
+                    <table>
+                        <thead><tr><th>Lap</th><th>Time</th><th>Gap</th><th>Top speed</th><th>Pos</th></tr></thead>
+                        <tbody id="lapRows"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div class="grid2">
+            <div class="panel"><div class="panel-head"><div><div class="eyebrow">Telemetry</div><h2>Speed</h2></div></div><div class="chart-wrapper"><canvas id="speedChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="eyebrow">Inputs</div><h2>Throttle &amp; Brake</h2></div></div><div class="chart-wrapper"><canvas id="inputChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="eyebrow">Timing</div><h2>Lap Times</h2></div></div><div class="chart-wrapper"><canvas id="lapChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="eyebrow">Race</div><h2>Position</h2></div></div><div class="chart-wrapper"><canvas id="posChart"></canvas></div></div>
+        </div>
+    </div>
+</div>
+<script src="stats.js"></script>
+</body>
+</html>

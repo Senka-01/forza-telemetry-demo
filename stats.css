@@ -1,0 +1,95 @@
+/* Race stats page. Everything is scoped under .st so the theme files and the other pages are untouched. */
+.st { --st-panel: #19191f; --st-line: #34333b; --st-tile: #0c0c10; --st-edge: #d6d6dc; --st-muted: #9999a4;
+      --st-accent: #ff8248; --st-best: #cf91fa; }
+
+/* top bar: eyebrow + title on the left, session picker on the right */
+.st .st-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; text-align: left;
+              margin: 0 0 16px; padding: 0; border: 0; }
+.st .st-top h1 { margin: 4px 0 0; font-size: 1.8rem; letter-spacing: -.03em; color: #ececef; text-shadow: none; }
+.st .eyebrow { color: var(--st-accent); font-size: .68rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.st .label { color: var(--st-muted); text-transform: uppercase; letter-spacing: .08em; font-size: .68rem; font-weight: 600; }
+.st .hint { color: #80808c; font-size: .76rem; line-height: 1.5; }
+
+/* session bar: picker, track, car, date */
+.st .st-session { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 28px; background: var(--st-panel);
+                  border: 1px solid var(--st-line); border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+.st .st-session > div { display: grid; gap: 5px; min-width: 0; }
+.st .st-session .st-picker { flex: 1 1 340px; }
+.st .st-session strong { font-size: 1.05rem; font-weight: 700; color: #f3f3f5; overflow-wrap: anywhere; }
+.st .st-session .st-carname { flex: 0 1 300px; }
+.st #sessionSelect { width: 100%; max-width: 100%; margin: 0; padding: 8px 10px; font-size: .92rem; font-weight: 600; color: #ececef; }
+
+/* the two rows of numbers, as wheel-display tiles: dark tile, light border, small label over a big centred value */
+.st #cards { display: grid; gap: 10px; margin-bottom: 14px; }
+.st .st-row { display: grid; gap: 10px; }
+.st .st-result { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.st .st-perf { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.st .st-tile { background: var(--st-tile); border: 1.5px solid var(--st-edge); border-radius: 9px; padding: 10px 10px 11px;
+               text-align: center; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.st .st-tile .st-label { color: #c9c9d0; font-size: .7rem; font-weight: 600; letter-spacing: .02em; }
+.st .st-tile .st-val { color: #fff; font-size: 2rem; font-weight: 800; line-height: 1.15; font-variant-numeric: tabular-nums;
+                       letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .st-tile .st-unit { color: #8a8a95; font-size: .66rem; margin-top: 1px; min-height: 1em; }
+.st .st-tile.st-best .st-val { color: var(--st-best); }
+.st .st-tile.st-finish { background: #f3f3f5; border-color: #f3f3f5; }
+.st .st-tile.st-finish .st-val { color: #111; }
+.st .st-tile.st-finish .st-label, .st .st-tile.st-finish .st-unit { color: #444; }
+.st .st-perf .st-tile { background: #16161b; border-color: #3d3d45; padding: 8px 8px 9px; }
+.st .st-perf .st-tile .st-val { font-size: 1.45rem; }
+.st .st-meter { height: 4px; margin: 6px 6px 0; border-radius: 2px; background: #2c2c33; overflow: hidden; }
+.st .st-meter i { display: block; height: 100%; border-radius: 2px; }
+
+/* panels with eyebrow headings */
+.st .panel { background: var(--st-panel); border: 1px solid var(--st-line); border-radius: 12px; padding: 14px 16px 16px; margin: 0; min-width: 0; }
+.st .panel-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.st .panel-head h2 { margin: 4px 0 0; font-size: 1.05rem; color: #ececef; }
+.st .panel-head .hint { text-align: right; }
+
+/* map + laps side by side */
+.st .st-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 14px; align-items: stretch; margin-bottom: 14px; }
+.st .st-map { display: flex; flex-direction: column; }
+.st canvas#mapCanvas { display: block; width: 100%; height: min(62vh, 600px); min-height: 320px; background: #111116; border-radius: 8px; }
+.st .st-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 10px; font-size: .76rem; color: #c3c3cc; }
+.st .st-scale { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.st .st-scale .st-ramp { width: 160px; height: 8px; border-radius: 4px;
+                         background: linear-gradient(90deg, #3b82f6, #22d3ee, #4ade80, #facc15, #ff8248, #ef4444); }
+.st .st-key { display: inline-flex; align-items: center; gap: 6px; }
+.st .st-key .ring { width: 11px; height: 11px; border: 2px solid #fff; border-radius: 50%; }
+.st .st-key .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px #111116, 0 0 0 4.5px var(--st-accent); }
+.st .st-legend .hint { margin-left: auto; }
+
+/* lap table */
+.st .st-laps .table-scroll { flex: 1; }
+.st .st-laps table { width: 100%; border-collapse: collapse; font: .85rem 'Segoe UI', sans-serif; font-variant-numeric: tabular-nums; }
+.st .st-laps th, .st .st-laps td { padding: 9px 8px; text-align: right; border-bottom: 1px solid #2c2c33; }
+.st .st-laps th:first-child, .st .st-laps td:first-child { text-align: left; }
+.st .st-laps th { color: var(--st-muted); font-size: .66rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.st .st-laps td { color: #e4e4e8; }
+.st .st-laps td:nth-child(2) { font-weight: 700; color: #fff; }
+.st .st-laps tbody tr:hover td { background: #202027; }
+.st .st-laps tr.best td, .st .st-laps tr.best td:nth-child(2) { color: var(--st-best); font-weight: 700; }
+.st .st-laps .rw { color: var(--st-accent); font-size: .74rem; margin-left: 4px; }
+.st .st-laps td.empty { text-align: center; color: #80808c; padding: 30px 8px; }
+
+/* charts */
+.st .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.st .chart-wrapper { position: relative; height: 260px; }
+
+.st .empty { text-align: center; color: #80808c; padding: 40px; }
+
+@media (max-width: 1200px) {
+  .st .st-perf { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .st .st-main { grid-template-columns: minmax(0, 1fr); }
+  .st .st-result .st-tile .st-val { font-size: 1.55rem; }
+}
+@media (max-width: 900px) {
+  .st .st-result { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .st .grid2 { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .st .st-top { flex-direction: column; align-items: flex-start; }
+  .st .st-result, .st .st-perf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st .st-tile .st-val { font-size: 1.6rem; }
+  .st canvas#mapCanvas { height: 55vh; min-height: 260px; }
+  .st .st-legend .hint { margin-left: 0; }
+}

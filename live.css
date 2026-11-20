@@ -1,0 +1,90 @@
+/* Live page layout and dash tiles. Everything is scoped under .lv so the other pages and theme files are untouched. */
+.lv { --lv-panel: #19191f; --lv-line: #34333b; --lv-tile: #0c0c10; --lv-edge: #d6d6dc; --lv-muted: #9999a4;
+      --lv-accent: #ff8248; --lv-best: #cf91fa; }
+
+/* top bar: same eyebrow + title as the analysis and playback pages */
+.lv .lv-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; text-align: left;
+              margin: 0 0 16px; padding: 0; border: 0; }
+.lv .lv-top h1 { margin: 4px 0 0; font-size: 1.8rem; letter-spacing: -.03em; color: #ececef; text-shadow: none; }
+.lv .eyebrow { color: var(--lv-accent); font-size: .68rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.lv .lv-top .status { margin: 0; gap: 10px; font-size: .8rem; justify-content: flex-end; flex-direction: row; }
+.lv .lv-top .status-item { background: var(--lv-panel); border: 1px solid var(--lv-line); border-radius: 999px; padding: 6px 12px; color: #d7d7dc; }
+.lv .status-indicator { width: 9px; height: 9px; }
+
+/* car / track bar */
+.lv .lv-session { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 28px; background: var(--lv-panel);
+                  border: 1px solid var(--lv-line); border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+.lv .lv-session > div { display: grid; gap: 5px; min-width: 0; }
+.lv .lv-session .lv-car { flex: 1 1 260px; }
+.lv .label { color: var(--lv-muted); text-transform: uppercase; letter-spacing: .08em; font-size: .68rem; font-weight: 600; }
+.lv .lv-carname { font-size: 1.15rem; font-weight: 700; color: #f3f3f5; cursor: pointer; overflow-wrap: anywhere; }
+.lv .lv-carname:hover { color: var(--lv-accent); }
+.lv .hint { color: #80808c; font-size: .74rem; }
+.lv .track-select { font-size: .95rem; font-weight: 600; padding: 8px 10px; max-width: 320px; color: #ececef; }
+
+/* main grid: engine | timing | map */
+.lv .lv-main { display: grid; grid-template-columns: minmax(210px, 270px) minmax(250px, 330px) minmax(0, 1fr);
+               gap: 14px; align-items: stretch; }
+.lv .lv-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+/* tiles, as on a wheel display: dark tile, light border, small label over a big centred value */
+.lv .lv-tile { background: var(--lv-tile); border: 1.5px solid var(--lv-edge); border-radius: 9px; padding: 8px 10px 10px;
+               text-align: center; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.lv .lv-tile .lv-label { color: #c9c9d0; font-size: .7rem; font-weight: 600; letter-spacing: .02em; }
+.lv .lv-tile .lv-val { color: #fff; font-size: 2rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums;
+                       letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv .lv-tile .lv-unit { color: #8a8a95; font-size: .66rem; margin-top: 1px; }
+.lv .lv-time { flex: 1; }
+.lv .lv-time .lv-val { font-size: 2.1rem; }
+.lv .lv-best .lv-val { color: var(--lv-best); }
+.lv .lv-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.lv .lv-row .lv-val { font-size: 1.7rem; }
+.lv .lv-tile input { width: 100%; max-width: 70px; margin: 2px auto 0; background: #18181e; color: #fff; border: 1px solid #414048;
+                     border-radius: 6px; padding: 2px 4px; font: 800 1.35rem 'Segoe UI', sans-serif; text-align: center; }
+.lv .lv-tile input:focus { outline: none; border-color: var(--lv-accent); }
+
+/* gear block with RPM under it, then the white speed tile */
+.lv .lv-gear { flex: 1; background: #26262c; border-color: #3d3d45; padding: 14px 10px; }
+.lv .lv-gear .lv-gearval { color: #fff; font-size: 6.5rem; font-weight: 900; line-height: 1; font-style: italic; }
+.lv .lv-gear .lv-label { margin-top: 8px; }
+.lv .lv-gear .lv-val { font-size: 1.6rem; }
+.lv .lv-speed { background: #f3f3f5; border-color: #f3f3f5; }
+.lv .lv-speed .lv-val { color: #111; font-size: 2.3rem; }
+.lv .lv-speed .lv-label { color: #333; }
+.lv .lv-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lv .lv-pair .lv-val { font-size: 1.55rem; }
+
+/* map panel */
+.lv .lv-panel { background: var(--lv-panel); border: 1px solid var(--lv-line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.lv .lv-map { display: flex; flex-direction: column; margin: 0; }
+.lv .lv-map .map-head { align-items: flex-start; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.lv .lv-map h2 { margin: 4px 0 0; font-size: 1.05rem; color: #ececef; }
+.lv .lv-map .map-controls { gap: 6px; justify-content: flex-end; }
+.lv .lv-map .map-controls button, .lv .lv-map .ref-controls button {
+  margin: 0; padding: 6px 10px; font-size: .74rem; font-weight: 600; text-transform: none; letter-spacing: normal;
+  background: #26262d; border: 1px solid #414048; border-radius: 7px; color: #ececef; transform: none; box-shadow: none; }
+.lv .lv-map .map-controls button:hover { border-color: var(--lv-accent); background: #2c2c33; }
+.lv .lv-map .map-controls input[type=range] { width: 110px; margin: 0; accent-color: var(--lv-accent); }
+.lv .lv-map #rotVal { margin: 0 4px !important; font-size: .8rem; }
+.lv .lv-map .ref-controls { margin: 0 0 0 4px; color: #c3c3cc; font-size: .78rem; }
+.lv .lv-map .ref-controls input { accent-color: var(--lv-accent); }
+.lv .lv-map canvas#mapCanvas { display: block; width: 100%; height: auto; max-height: 60vh;
+                                object-fit: contain; background: #111116; border-radius: 8px; }
+.lv .lv-map .ref-status { font-size: .85rem; align-items: center; }
+.lv .lv-map .ref-status .g-readout { margin: 0; color: #d7d7dc; }
+
+/* everything below the dash keeps its panels, just with the shared spacing */
+.lv .charts-grid, .lv .split { margin-top: 16px; gap: 16px; }
+.lv .panel h3, .lv .chart-container h3 { font-size: 1rem; }
+
+@media (max-width: 1000px) {
+  .lv .lv-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .lv .lv-map { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .lv .lv-top { flex-direction: column; align-items: flex-start; }
+  .lv .lv-top .status { flex-direction: row; }
+  .lv .lv-main { grid-template-columns: minmax(0, 1fr); }
+  .lv .lv-gear .lv-gearval { font-size: 5rem; }
+  .lv .lv-time .lv-val { font-size: 1.8rem; }
+}

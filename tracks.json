@@ -1,0 +1,204 @@
+[
+    {
+        "name":  "Bernese Alps",
+        "outline":  ""
+    },
+    {
+        "name":  "Bathurst",
+        "outline":  ""
+    },
+    {
+        "name":  "Brands Hatch",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/brands-hatch.json",
+            "raceline_png":  "maps/reference/brands-hatch_raceline.png",
+            "curvature_png":  "maps/reference/brands-hatch_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Catalunya",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/catalunya.json",
+            "raceline_png":  "maps/reference/catalunya_raceline.png",
+            "curvature_png":  "maps/reference/catalunya_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Circuit of the Americas",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/circuit-of-the-americas.json",
+            "raceline_png":  "maps/reference/circuit-of-the-americas_raceline.png",
+            "curvature_png":  "maps/reference/circuit-of-the-americas_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Daytona International Speedway",
+        "outline":  "",
+        "aliases":  ["Daytona"]
+    },
+    {
+        "name":  "Daytona",
+        "outline":  ""
+    },
+    {
+        "name":  "Dubai",
+        "outline":  ""
+    },
+    {
+        "name":  "Hockenheim",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/hockenheim.json",
+            "raceline_png":  "maps/reference/hockenheim_raceline.png",
+            "curvature_png":  "maps/reference/hockenheim_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Homestead",
+        "outline":  ""
+    },
+    {
+        "name":  "Indianapolis Motor Speedway",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/indianapolis-motor-speedway.json",
+            "raceline_png":  "maps/reference/indianapolis-motor-speedway_raceline.png",
+            "curvature_png":  "maps/reference/indianapolis-motor-speedway_curvature.png",
+            "layout":  "Oval",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Sonoma raceway",
+        "outline":  ""
+    },
+    {
+        "name":  "Laguna Seca",
+        "outline":  "maps/laguna-seca.json"
+    },
+    {
+        "name":  "Le Mans",
+        "outline":  ""
+    },
+    {
+        "name":  "Lime Rock",
+        "outline":  ""
+    },
+    {
+        "name":  "long beach",
+        "outline":  ""
+    },
+    {
+        "name":  "Maple Valley",
+        "outline":  ""
+    },
+    {
+        "name":  "Monza",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/monza.json",
+            "raceline_png":  "maps/reference/monza_raceline.png",
+            "curvature_png":  "maps/reference/monza_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Mugello",
+        "outline":  ""
+    },
+    {
+        "name":  "Nürburgring",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/nurburgring.json",
+            "raceline_png":  "maps/reference/nurburgring_raceline.png",
+            "curvature_png":  "maps/reference/nurburgring_curvature.png",
+            "layout":  "Grand Prix circuit",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Prague",
+        "outline":  ""
+    },
+    {
+        "name":  "Rio",
+        "outline":  ""
+    },
+    {
+        "name":  "Road America",
+        "outline":  ""
+    },
+    {
+        "name":  "Sebring",
+        "outline":  ""
+    },
+    {
+        "name":  "Silverstone",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/silverstone.json",
+            "raceline_png":  "maps/reference/silverstone_raceline.png",
+            "curvature_png":  "maps/reference/silverstone_curvature.png",
+            "layout":  "Grand Prix layout",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Spa-Francorchamps",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/spa-francorchamps.json",
+            "raceline_png":  "maps/reference/spa-francorchamps_raceline.png",
+            "curvature_png":  "maps/reference/spa-francorchamps_curvature.png",
+            "layout":  "Full circuit",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Suzuka",
+        "outline":  "",
+        "reference":  {
+            "data":  "maps/reference/suzuka.json",
+            "raceline_png":  "maps/reference/suzuka_raceline.png",
+            "curvature_png":  "maps/reference/suzuka_curvature.png",
+            "layout":  "Full circuit",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    },
+    {
+        "name":  "Top Gear",
+        "outline":  ""
+    },
+    {
+        "name":  "Virginia International Raceway",
+        "outline":  ""
+    },
+    {
+        "name":  "Watkins Glen",
+        "outline":  ""
+    },
+    {
+        "name":  "Yas Marina",
+        "outline":  "maps/yas-marina.json",
+        "reference":  {
+            "data":  "maps/reference/yas-marina.json",
+            "raceline_png":  "maps/reference/yas-marina_raceline.png",
+            "curvature_png":  "maps/reference/yas-marina_curvature.png",
+            "layout":  "Full circuit",
+            "source":  "TUMFTM/racetrack-database (LGPL-3.0)"
+        }
+    }
+]

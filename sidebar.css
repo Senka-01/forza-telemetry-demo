@@ -1,0 +1,38 @@
+body { padding-left: 92px; }
+body.sidebar-expanded { padding-left: 244px; }
+#gCanvas { max-width: 100%; height: auto; }
+.app-sidebar {
+    position: fixed; inset: 0 auto 0 0; z-index: 20; width: 68px;
+    background: #17171d; border-right: 1px solid #34333b; color: #ececef;
+    overflow-x: hidden; overflow-y: auto; transition: width .18s ease;
+}
+.sidebar-expanded .app-sidebar { width: 220px; }
+.app-sidebar .sidebar-head { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 18px 10px 20px; border-bottom: 1px solid #34333b; }
+.app-sidebar .sidebar-brand { display: flex; align-items: center; gap: 8px; color: #ff8248; font-size: 1.3rem; font-weight: 800; line-height: 1; }
+.app-sidebar .sidebar-brand span { display: none; color: #ececef; font-size: .66rem; letter-spacing: .1em; white-space: nowrap; }
+.sidebar-expanded .app-sidebar .sidebar-brand span { display: inline; }
+.app-sidebar .sidebar-toggle {
+    display: grid; place-items: center; flex: none; width: 42px; height: 42px; padding: 0;
+    border: 1px solid #414048; border-radius: 8px; background: #222229; color: #d7d7dc;
+    cursor: pointer; box-shadow: none;
+}
+.app-sidebar .sidebar-toggle:hover { background: #2a292f; border-color: #ff8248; }
+.app-sidebar .sidebar-nav { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 6px; padding: 12px 10px; }
+.app-sidebar .sidebar-nav a {
+    display: flex; align-items: center; gap: 14px; min-height: 46px; padding: 10px 11px;
+    border: 1px solid transparent; border-radius: 8px; color: #b6b6bf; text-decoration: none; white-space: nowrap;
+    font-size: .85rem; font-weight: 600;
+}
+.app-sidebar .sidebar-nav a:hover { background: #26262d; color: #fff; }
+.app-sidebar .sidebar-nav a[aria-current="page"] { color: #ff9a68; background: #35251f; border-color: #704330; }
+.app-sidebar svg { display: block; flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.app-sidebar .sidebar-nav a span { display: none; }
+.sidebar-expanded .app-sidebar .sidebar-nav a span { display: inline; }
+.app-sidebar a:focus-visible, .app-sidebar button:focus-visible { outline: 2px solid #ff8248; outline-offset: 2px; }
+@media (max-width: 768px) {
+    body, body.sidebar-expanded { padding-left: 78px; }
+    .app-sidebar { width: 64px; }
+    .sidebar-expanded .app-sidebar { width: 220px; box-shadow: 8px 0 24px rgba(0,0,0,.4); }
+    .app-sidebar .sidebar-nav { padding-inline: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .app-sidebar { transition: none; } }

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="replay/demo.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forza 7 Race Playback</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="chart-theme.js"></script>
+    <link rel="stylesheet" href="playback.css">
+    <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<script src="sidebar.js"></script>
+<div class="container">
+    <header class="topbar">
+        <div><div class="eyebrow">FORZA MOTORSPORT 7</div><h1>Race Playback</h1></div>
+    </header>
+
+    <section class="session-bar">
+        <div class="session-picker">
+            <label class="label" for="sessionSelect">Saved session</label>
+            <select id="sessionSelect" disabled><option>Loading sessions...</option></select>
+        </div>
+        <div class="session-info"><span class="label">Car</span><strong id="carName">-</strong></div>
+        <div class="session-info"><span class="label">Track</span><strong id="trackName">-</strong></div>
+        <div id="status" role="status" aria-live="polite">Loading saved sessions...</div>
+    </section>
+
+    <section class="player" aria-label="Playback controls">
+        <input id="seek" type="range" min="0" max="0" step="0.001" value="0" aria-label="Seek through recording" disabled>
+        <div class="player-row">
+            <button id="back" class="secondary" type="button" disabled aria-label="Back 10 seconds">-10s</button>
+            <button id="play" type="button" disabled>Play</button>
+            <button id="forward" class="secondary" type="button" disabled aria-label="Forward 10 seconds">+10s</button>
+            <span id="clock">0:00 / 0:00</span>
+            <label for="rate">Playback speed</label>
+            <select id="rate" disabled>
+                <option value="0.25">0.25x</option><option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option><option value="1.5">1.5x</option>
+                <option value="2">2x</option><option value="4">4x</option>
+            </select>
+        </div>
+        <p class="hint">Telemetry replay, not game video. The timeline includes recording gaps; values are held for up to one second.
+            Space plays or pauses; arrow keys seek 10 seconds.</p>
+    </section>
+
+    <div class="gauge-grid">
+        <div class="gauge"><div class="label">Speed</div><div class="gauge-value" id="speed">-</div><div class="unit">mph</div></div>
+        <div class="gauge"><div class="label">RPM</div><div class="gauge-value" id="rpm">-</div><div class="unit">rpm</div></div>
+        <div class="gauge"><div class="label">Horsepower</div><div class="gauge-value" id="hp">-</div><div class="unit">hp</div></div>
+        <div class="gauge"><div class="label">Torque</div><div class="gauge-value" id="torque">-</div><div class="unit">lb-ft</div></div>
+        <div class="gauge"><div class="label">Gear</div><div class="gauge-value" id="gear">-</div><div class="unit">current gear</div></div>
+        <div class="gauge"><div class="label">Position</div><div class="gauge-value" id="position">-</div><div class="unit">race position</div></div>
+    </div>
+
+    <div class="workspace">
+        <main class="graph-stack">
+            <section class="panel">
+                <div class="panel-head"><div><div class="eyebrow">DRIVER INPUTS</div><h2>Telemetry</h2></div><span class="hint">Last 50 seconds</span></div>
+                <div class="chart-wrapper chart-main"><canvas id="inputChart" aria-label="Throttle, brake, and speed over time" role="img"></canvas></div>
+            </section>
+            <section class="panel">
+                <div class="panel-head"><div><div class="eyebrow">CORNERING</div><h2>Lateral G</h2></div><span class="hint">g-force</span></div>
+                <div class="chart-wrapper"><canvas id="lateralChart" aria-label="Lateral g-force over time" role="img"></canvas></div>
+            </section>
+            <section class="panel">
+                <div class="panel-head"><div><div class="eyebrow">DRIVER INPUT</div><h2>Steering</h2></div><span class="hint">Normalized input · %</span></div>
+                <div class="chart-wrapper"><canvas id="steeringChart" aria-label="Steering input over time" role="img"></canvas></div>
+            </section>
+        </main>
+        <aside class="side-stack">
+            <section class="panel map-panel">
+                <div class="eyebrow">DRIVEN LINE</div><h2>Track map</h2>
+                <canvas id="mapCanvas" width="1200" height="600" aria-label="Track driven line and current position" role="img"></canvas>
+                <p class="hint">Recorded line and current position. Uses your saved map rotation and flip.</p>
+                <p class="hint" id="mapSectorNote">Sector lines appear when a crossing and position are recorded.</p>
+            </section>
+            <section class="panel">
+                <div class="eyebrow">RACE PROGRESS</div><h2>Lap timing</h2>
+                <div class="lap-bar">
+                    <div class="lap-item"><span class="label">Lap</span><strong id="lapNum">-</strong></div>
+                    <div class="lap-item"><span class="label">Current</span><strong id="lapCurrent">--:--.---</strong></div>
+                    <div class="lap-item"><span class="label">Last</span><strong id="lapLast">--:--.---</strong></div>
+                    <div class="lap-item"><span class="label">Best</span><strong id="lapBest">--:--.---</strong></div>
+                    <div class="lap-item"><span class="label">Field</span><strong id="fieldSize">-</strong></div>
+                </div>
+            </section>
+            <section class="panel sectors-panel">
+                <div class="eyebrow">LAP COMPARISON</div><h2>Sector times</h2>
+                <p class="hint">S1 starts at the start/finish crossing. Sectors are 1,000 m, with a shorter final sector.</p>
+                <div id="sectorMessage" class="hint" role="status">Select a session to calculate sectors.</div>
+                <div class="sector-scroll"><table id="sectorTable"><thead></thead><tbody></tbody></table></div>
+                <p class="hint">Estimated from recorded speed. Laps without an observed start crossing are omitted; the final sector needs a recorded finish crossing. Completed sectors are retained after gaps or rewinds, and best times may include interrupted attempts.
+                    Final-sector distances can differ, so the shortest time is not necessarily the fastest driving. Scroll the table for more laps.</p>
+            </section>
+        </aside>
+    </div>
+
+    <section class="more-telemetry">
+        <div class="section-title"><div class="eyebrow">POWERTRAIN &amp; VEHICLE</div><h2>More telemetry</h2></div>
+        <div class="charts-grid">
+            <div class="panel"><h3>Horsepower &amp; Torque</h3><div class="chart-wrapper"><canvas id="hpTorqueChart"></canvas></div></div>
+            <div class="panel"><h3>RPM &amp; Speed</h3><div class="chart-wrapper"><canvas id="rpmSpeedChart"></canvas></div></div>
+        </div>
+        <div class="split">
+            <div class="panel">
+                <h3>Pedals &amp; G-Force</h3>
+                <div class="pedals">
+                    <div class="pedal"><div class="label">Accelerator</div><div class="pedal-bar"><div id="throttleFill" class="pedal-fill throttle"></div></div><div id="throttleVal">-</div></div>
+                    <div class="pedal"><div class="label">Brake</div><div class="pedal-bar"><div id="brakeFill" class="pedal-fill brake"></div></div><div id="brakeVal">-</div></div>
+                </div>
+                <div class="center"><canvas id="gCanvas" width="280" height="280"></canvas><div class="hint">Lat <span id="gLat">-</span> g &nbsp;|&nbsp; Long <span id="gLong">-</span> g</div></div>
+            </div>
+            <div class="panel">
+                <h3>Tires</h3>
+                <div class="center">
+                    <svg class="car" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="100" y="40" width="100" height="320" rx="40" fill="#222633" stroke="#ff733b" stroke-width="3"/>
+                        <rect x="112" y="95" width="76" height="55" rx="12" fill="#111217" stroke="#34343c" stroke-width="2"/>
+                        <rect x="112" y="250" width="76" height="50" rx="12" fill="#111217" stroke="#34343c" stroke-width="2"/>
+                        <polygon points="150,48 140,68 160,68" fill="#ff733b"/>
+                        <g id="wheelFL" transform="translate(70,100)"><rect id="tireFL" x="-18" y="-35" width="36" height="70" rx="6" fill="#444"/></g>
+                        <g id="wheelFR" transform="translate(230,100)"><rect id="tireFR" x="-18" y="-35" width="36" height="70" rx="6" fill="#444"/></g>
+                        <g transform="translate(70,300)"><rect id="tireRL" x="-18" y="-35" width="36" height="70" rx="6" fill="#444"/></g>
+                        <g transform="translate(230,300)"><rect id="tireRR" x="-18" y="-35" width="36" height="70" rx="6" fill="#444"/></g>
+                        <text id="tempFL" x="70" y="160">--</text><text id="tempFR" x="230" y="160">--</text>
+                        <text id="tempRL" x="70" y="360">--</text><text id="tempRR" x="230" y="360">--</text>
+                    </svg>
+                    <div class="hint">Estimated wheel angle: <span id="steerAngle">-</span>°</div>
+                    <div class="unit">Temps in °F · blue = cold, green = warm, red = hot</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="sectors.js"></script>
+<script src="playback.js"></script>
+</body>
+</html>

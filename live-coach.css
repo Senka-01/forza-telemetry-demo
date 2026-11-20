@@ -1,0 +1,46 @@
+/* Live driving coach: delta bar, corner result, lap summary, chase-view button. Scoped under .lv like live.css. */
+.lv { --lv-ahead: #4ade80; --lv-behind: #fb4f60; }
+
+/* delta to the best lap, at the top of the gear/speed column */
+.lv .lv-delta { padding: 8px 12px 10px; gap: 4px; }
+.lv .lv-delta-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.lv .lv-delta-ref { color: #8a8a95; font-size: .66rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv .lv-delta-val { color: #fff; font-size: 2.2rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.lv .lv-delta.ahead .lv-delta-val { color: var(--lv-ahead); }
+.lv .lv-delta.behind .lv-delta-val { color: var(--lv-behind); }
+.lv .lv-delta-bar { position: relative; height: 10px; border-radius: 5px; background: #1d1d23; overflow: hidden; margin: 2px 0; }
+.lv .lv-delta-bar i { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: #d6d6dc; }
+.lv .lv-delta-fill { position: absolute; top: 0; bottom: 0; left: 50%; width: 0; background: #55555e; transition: width .1s linear, left .1s linear; }
+.lv .lv-delta.ahead .lv-delta-fill { background: var(--lv-ahead); }
+.lv .lv-delta.behind .lv-delta-fill { background: var(--lv-behind); }
+.lv .lv-delta-foot { display: flex; justify-content: space-between; gap: 8px; color: #9999a4; font-size: .7rem; font-variant-numeric: tabular-nums; }
+.lv .lv-delta-foot span:last-child { color: #80808c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* corner result and lap summary, above the map */
+.lv .lv-coach { display: grid; gap: 8px; margin-bottom: 10px; }
+.lv .lv-flash, .lv .lv-lapsum { display: flex; align-items: center; gap: 12px; min-width: 0; background: var(--lv-tile); border: 1.5px solid #3d3d45;
+                                border-radius: 9px; padding: 8px 14px; color: #c9c9d0; transition: border-color .3s, opacity .6s; }
+.lv .lv-flash { opacity: .6; }
+.lv .lv-flash.fresh { opacity: 1; border-color: var(--lv-edge); }
+.lv .lv-flash.fresh.loss { border-color: var(--lv-behind); box-shadow: inset 4px 0 var(--lv-behind); }
+.lv .lv-flash.fresh.gain { border-color: var(--lv-ahead); box-shadow: inset 4px 0 var(--lv-ahead); }
+.lv .lv-flash-turn { color: var(--lv-accent); font-weight: 800; font-size: 1.15rem; min-width: 34px; }
+.lv .lv-flash-delta { color: #fff; font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lv .lv-flash.loss .lv-flash-delta { color: var(--lv-behind); }
+.lv .lv-flash.gain .lv-flash-delta { color: var(--lv-ahead); }
+.lv .lv-flash-text { font-size: .95rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lv .lv-lapsum[hidden] { display: none; }
+.lv .lv-sum-lap { color: var(--lv-accent); font-size: .68rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; white-space: nowrap; }
+.lv .lv-sum-time { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lv .lv-lapsum.loss .lv-sum-time { color: #ff9aab; }
+.lv .lv-lapsum.gain .lv-sum-time { color: var(--lv-ahead); }
+.lv .lv-sum-text { font-size: .88rem; min-width: 0; }
+
+/* chase view toggle sits with the map buttons */
+.lv .lv-map .map-controls button.lv-chase.active { background: var(--lv-accent); border-color: var(--lv-accent); color: #16161b; }
+.lv .lv-map .map-controls .lv-off { opacity: .35; pointer-events: none; }
+
+@media (max-width: 700px) {
+  .lv .lv-flash, .lv .lv-lapsum { flex-wrap: wrap; gap: 4px 10px; }
+  .lv .lv-flash-text { white-space: normal; flex-basis: 100%; }
+}
